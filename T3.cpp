@@ -1,17 +1,10 @@
 ﻿/***************************************************************************
  * T3.cpp is the Tic-Tac-Toe game implementation file.
  * Uses the STL for "You vs. The Computer" gameplay.
+ * Adapted and expanded from  Beginning C++ Through Game Programming,
+ * Third Edition, Michael Dawson 2011
  ***************************************************************************/
-#include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
-using std::cout;
-using std::cin;
-using std::endl;
-using std::string;
-using std::vector;
-using std::fill;
+#include "T3.hpp"
 
 // Global constants.
 const char X = 'X';
@@ -20,18 +13,6 @@ const char EMPTY = ' ';
 const char TIE = 'T';
 const char NO_ONE = 'N';
 
-// Function prototypes.
-void instructions();
-char askYesNo(string question);
-int askNumber(string question, int high, int low = 0);
-char humanPiece();
-char opponent(char piece);
-void displayBoard(const vector<char>& board);
-char winner(const vector<char>& board);
-bool isLegal(int move, const vector<char>& board);
-int humanMove(const vector<char>& board, char human);
-int computerMove(vector<char> board, char computer);
-void announceWinner(char winner, char computer, char human);
 
 int main() {
 	int move;
