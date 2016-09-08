@@ -22,7 +22,7 @@ char humanPiece();
 char opponent(char piece);
 void displayBoard(const vector<char>* const pBoard);
 char winner(const vector<char>* const pBoard);
-bool isLegal(const vector<char>* const pBoard, int move);
+bool isLegal(int move, const vector<char>* pBoard);
 int humanMove(const vector<char>* const pBoard, char human);
 int computerMove(vector<char> board, char computer);
 void announceWinner(char winner, char computer, char human);
