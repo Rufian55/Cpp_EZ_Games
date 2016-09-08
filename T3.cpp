@@ -25,22 +25,25 @@ int main() {
 		char human = humanPiece();
 		char computer = opponent(human);
 		char turn = X;
-		displayBoard(board);
+		displayBoard(&board);
 
-		while (winner(board) == NO_ONE) {
-			if (turn == human) {
-				move = humanMove(board, human);
+		while (winner(&board) == NO_ONE)
+		{
+			if (turn == human)
+			{
+				move = humanMove(&board, human);
 				board[move] = human;
 			}
-			else {
+			else
+			{
 				move = computerMove(board, computer);
 				board[move] = computer;
 			}
-			displayBoard(board);
+			displayBoard(&board);
 			turn = opponent(turn);
 		}
 
-		announceWinner(winner(board), computer, human);
+		announceWinner(winner(&board), computer, human);
 
 		cout << "Play again? Enter 'y'.\n";
 		cin >> playAgain;
@@ -107,16 +110,17 @@ char opponent(char piece) {
 	}
 }
 
-void displayBoard(const vector<char>& board) {
-	cout << "\n\t" << board[0] << " | " << board[1] << " | " << board[2];
+void displayBoard(const vector<char>* const pBoard)
+{
+	cout << "\n\t" << (*pBoard)[0] << " | " << (*pBoard)[1] << " | " << (*pBoard)[2];
 	cout << "\n\t" << "---------";
-	cout << "\n\t" << board[3] << " | " << board[4] << " | " << board[5];
+	cout << "\n\t" << (*pBoard)[3] << " | " << (*pBoard)[4] << " | " << (*pBoard)[5];
 	cout << "\n\t" << "---------";
-	cout << "\n\t" << board[6] << " | " << board[7] << " | " << board[8];
+	cout << "\n\t" << (*pBoard)[6] << " | " << (*pBoard)[7] << " | " << (*pBoard)[8];
 	cout << "\n\n";
 }
 
-char winner(const vector<char>& board) {
+char winner(const vector<char>* const pBoard) {
 	// All possible winning rows.
 	const int WINNING_ROWS[8][3] = {
 		{ 0, 1, 2 },
@@ -132,35 +136,37 @@ char winner(const vector<char>& board) {
 	const int TOTAL_ROWS = 8;
 
 	// Winning row has three values that are the same (and !EMPTY).
-	for (int row = 0; row < TOTAL_ROWS; ++row) {
-		if ((board[WINNING_ROWS[row][0]] != EMPTY) &&
-			(board[WINNING_ROWS[row][0]] == board[WINNING_ROWS[row][1]]) &&
-			(board[WINNING_ROWS[row][1]] == board[WINNING_ROWS[row][2]]))
+	for (int row = 0; row < TOTAL_ROWS; ++row)
+	{
+		if (((*pBoard)[WINNING_ROWS[row][0]] != EMPTY) &&
+			((*pBoard)[WINNING_ROWS[row][0]] == (*pBoard)[WINNING_ROWS[row][1]]) &&
+			((*pBoard)[WINNING_ROWS[row][1]] == (*pBoard)[WINNING_ROWS[row][2]]))
 		{
-			return board[WINNING_ROWS[row][0]];
+			return (*pBoard)[WINNING_ROWS[row][0]];
 		}
 	}
 
 	// Since nobody has won, check for a tie (no empty squares left)
-	if (count(board.begin(), board.end(), EMPTY) == 0)
+	if (count(pBoard->begin(), pBoard->end(), EMPTY) == 0)
 		return TIE;
 
 	// Since nobody has won and it's not a tie, the game continues.
 	return NO_ONE;
 }
 
-bool isLegal(int move, const vector<char>& board) {
-	return (board[move] == EMPTY);
+bool isLegal(int move, const vector<char>* pBoard) {
+	return ((*pBoard)[move] == EMPTY);
 }
 
-int humanMove(const vector<char>& board, char human) {
-	int move = askNumber("What is your move?", (board.size() - 1));
-	while (!isLegal(move, board)) {
-		cout << "\nThat square is already occupied!\n";
-		move = askNumber("What is your move?", (board.size() - 1));
+int humanMove(const vector<char>* const pBoard, char human)
+{
+	int move = askNumber("What is your move?", (pBoard->size() - 1));
+	while (!isLegal(move, pBoard))
+	{
+		cout << "\nThat square is already occupied.\n";
+		move = askNumber("What is your move?", (pBoard->size() - 1));
 	}
-	cout << "Good enough...\n";
-
+	cout << "good enough...\n";
 	return move;
 }
 
@@ -170,12 +176,12 @@ int computerMove(vector<char> board, char computer) {
 
 	// If computer can win on next move, make this move.
 	while (!found && move < board.size()) {
-		if (isLegal(move, board)) {
-			// Try move
+		if (isLegal(move, &board)) {
+			// Try move.
 			board[move] = computer;
-			// Test for winner
-			found = winner(board) == computer;
-			// Undo move
+			// Test for winner.
+			found = winner(&board) == computer;
+			// Undo move.
 			board[move] = EMPTY;
 		}
 
@@ -190,12 +196,12 @@ int computerMove(vector<char> board, char computer) {
 		char human = opponent(computer);
 
 		while (!found && move < board.size()) {
-			if (isLegal(move, board)) {
+			if (isLegal(move, &board)) {
 				// Try move.
 				board[move] = human;
 				// Test for winner.
-				found = winner(board) == human;
-				// Undo move
+				found = winner(&board) == human;
+				// Undo move.
 				board[move] = EMPTY;
 			}
 
@@ -205,7 +211,7 @@ int computerMove(vector<char> board, char computer) {
 		}
 	}
 
-	// Otherwise, moving to the best open square is the move to make
+	// Otherwise, moving to the best open square is the move.
 	if (!found) {
 		move = 0;
 		unsigned int i = 0;
@@ -214,16 +220,17 @@ int computerMove(vector<char> board, char computer) {
 		// Pick best open square.
 		while (!found && i <  board.size()) {
 			move = BEST_MOVES[i];
-			if (isLegal(move, board)) {
+			if (isLegal(move, &board)) {
 				found = true;
 			}
 			++i;
 		}
 	}
 
-	cout << "I shall take square number " << move << endl;
+	cout << "I shall take square number " << move << "\n";
 	return move;
 }
+
 
 void announceWinner(char winner, char computer, char human) {
 	if (winner == computer) 	{
